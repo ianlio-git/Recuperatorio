@@ -7,7 +7,7 @@ interface List
 interface Collection
 
 List <|-- AbstractList
-Collection <|-- AbstractCollection
+Collection <|-- AbstractCollectio
 
 Collection <|- List
 AbstractCollection <|- AbstractList
