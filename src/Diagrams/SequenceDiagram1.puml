@@ -1,27 +1,26 @@
 @startuml
 'https://plantuml.com/class-diagram
+Main -> Biblioteca :cotizarPrestamo( idEstudiante: String, codigoDeMaterial: String, fechaDevolucion: int): void
+activate Biblioteca
+ Biblioteca -> Biblioteca: buscarEstudiante(idEstudiante: String): Estudiante
+    alt estudiante existe
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+        loop por cada estudiante
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+            activate Biblioteca
+            Biblioteca -> Estudiante:  sosEstudiante(idEstudiante: String):boolean
+                activate Estudiante
+                    Estudiante -> TarjetaBiblioteca: mostrarId(): String
+                    activate TarjetaBiblioteca
+                    TarjetaBiblioteca --> Estudiante: String
+                    deactivate TarjetaBiblioteca
+                    Biblioteca <-- Estudiante:  boolean
+                deactivate Estudiante
+            deactivate Biblioteca
+        end
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
-}
-
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
-
+    else no se encontro el estudiante
+    Biblioteca --> Main: trowExeption
+    end
+deactivate Biblioteca
 @enduml
