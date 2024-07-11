@@ -1,6 +1,86 @@
 @startuml
-'https://plantuml.com/class-diagram'
+
+class Restaurante {
+    - Menu: List<Productos>
+    - clientes: List<Cliente>
+    - pedidosConfirmados: List<Pedidos>
+    - instance: Restaurante
+    --
+    + private Restaurante()
+    --
+    + {static} getInstance(): Restaurante
+    --
+    + agregarArticuloEnPedido(idCliente:String, codigoArticulo: String): void
+    - confrimarPedido(pedido Pedido):void
+    - buscarCliente(idCliente: String): Cliente
+    - buscarProducto(codigoArticulo: String): Producto
+    --
+    + mostrarPrecioPedido(idCliente: String,idPedido: String, cantidad: double): double
 
 
+
+}
+class Pedido {
+    - idPedido: String
+    - cliente: Cliente
+    - articulo: Producto
+    - estado: String
+    + Pedido(producto Producto)
+    + agregarProducto(producto: Producto): void
+    + mostrarPrecio(cantidad double): double
+}
+
+abstract class Producto {
+    - idProducto: String
+    - descripcion: String
+    - precio: double
+    + Producto(codigo: int, descripcion: String, precio: double)
+    + {abstract} getPrecio(): double
+    + soyProducto(idProducto): boolean
+    + getIdProducto(): String
+}
+
+
+class Principal extends Producto {
+    - cantidadComensales: double
+    + Principal(codigo: int, descripcion: String, precio: double, cantidadComensales: double)
+    + {abstract} getPrecio(double): double
+}
+
+class Bebida extends Producto {
+    - volumenBotella: double
+    + Bebida(codigo: int, descripcion: String, precio: double, volumenBotella: double)
+    + {abstract} getPrecio(double): double
+}
+
+class Postre extends Producto {
+    + Postre(codigo: int, descripcion: String, precio: double)
+    + {abstract} getPrecio(double): double
+}
+
+class Cliente {
+    - idCliente: String
+    - nombre: String
+    - pedidosPendientes: List<Pedido>
+    --
+    + Cliente(idCliente: String , nombre:String)
+    --
+    + soyCliente(idCliente: String): boolean
+    + menosDeDosPendies(): boolean
+    + productosMismaCategoria(producto Producto): boolean
+    + agregarPedidosPendientes(): Pedido
+    + buscarEnPedidosPendientes(idPedido: String): Pedido
+    + tengoElPedido(idPedido: String):boolean
+
+}
+
+
+
+
+Cliente "1" o-- "*" Pedido
+Pedido "1" o-- "*" Producto
+Restaurante "1" *-- "*" Pedido
+Restaurante "1" *-- "*" Producto
+Restaurante "1" *-- "*" Cliente
 
 @enduml
