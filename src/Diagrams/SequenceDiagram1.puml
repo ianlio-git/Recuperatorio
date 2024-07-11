@@ -1,26 +1,62 @@
 @startuml
 'https://plantuml.com/class-diagram
-Main -> Biblioteca :cotizarPrestamo( idEstudiante: String, codigoDeMaterial: String, fechaDevolucion: int): void
-activate Biblioteca
- Biblioteca -> Biblioteca: buscarEstudiante(idEstudiante: String): Estudiante
-    alt estudiante existe
-
-        loop por cada estudiante
-
-            activate Biblioteca
-            Biblioteca -> Estudiante:  sosEstudiante(idEstudiante: String):boolean
-                activate Estudiante
-                    Estudiante -> TarjetaBiblioteca: mostrarId(): String
-                    activate TarjetaBiblioteca
-                    TarjetaBiblioteca --> Estudiante: String
-                    deactivate TarjetaBiblioteca
-                    Biblioteca <-- Estudiante:  boolean
-                deactivate Estudiante
-            deactivate Biblioteca
+Main -> Restaurante :agregarArticuloEnPedido(idCliente:String, codigoArticulo: String): void
+activate Restaurante
+ Restaurante -> Restaurante: buscarCliente(idCliente: String): Cliente
+    alt cliente existe
+        loop por cada cliente
+            activate Restaurante
+            Restaurante -> Cliente: soyCliente(idCliente: String): boolean
+                activate Cliente
+                    Restaurante <-- Cliente:  boolean
+                deactivate Cliente
         end
-
-    else no se encontro el estudiante
-    Biblioteca --> Main: trowExeption
+    else cliente no existe
+        Restaurante --> Main: trowExeption
     end
-deactivate Biblioteca
+    alt tiene menos de 2 pedidos pendientes
+        Restaurante -> Cliente: menosDeDosPendies(): boolean
+            activate Cliente
+            Restaurante <-- Cliente:  boolean
+            deactivate Cliente
+        deactivate Restaurante
+    else  no puede puedeRealizarPedido
+    Restaurante --> Main: trowExeption
+    end
+     Restaurante -> Restaurante: buscarProducto(codigoArticulo: String): Producto
+     alt el producto existe
+            loop por cada Producto
+                activate Restaurante
+                Restaurante -> Producto: soyProducto(idProducto): boolean
+                    activate Producto
+                        Restaurante <-- Producto:  boolean
+                    deactivate Producto
+                deactivate Restaurante
+            end
+        else no se encontro el Producto
+        Restaurante --> Main: trowExeption
+        end
+         alt no tiene productos de la misma categoria
+                Restaurante -> Cliente: productosMismaCategoria(producto Producto): boolean
+                    activate Cliente
+                    Restaurante <-- Cliente:  boolean
+                    deactivate Cliente
+
+
+            else no puede puedeRealizarPedido
+            Restaurante --> Main: trowExeption
+            end
+             Restaurante -> Cliente: agregarPedidosPendientes():Pedido
+                     activate Cliente
+                     Cliente -> Pedido: Pedido(producto Producto)
+
+                     activate Pedido
+                     Pedido -->Cliente: Pedido
+                     deactivate Pedido
+                     Cliente --> Restaurante: Pedido
+                     deactivate Cliente
+                     Restaurante -> Restaurante: confrimarPedido(pedido Pedido): void
+                     Restaurante --> Main: Void
+
+deactivate Restaurante
 @enduml

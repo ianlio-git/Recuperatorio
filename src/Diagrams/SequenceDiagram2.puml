@@ -1,27 +1,27 @@
 @startuml
 'https://plantuml.com/class-diagram
+Main -> Restaurante :mostrarPrecioPedido(idCliente: String,idPedido: String, cantidad: double): double
+activate Restaurante
+ Restaurante -> Restaurante: buscarCliente(idCliente: String): Cliente
+            Restaurante -> Cliente: tengoElPedido(idPedido: String):boolean
+             activate Cliente
+                                Restaurante <-- Cliente:  boolean
+             deactivate Cliente
+    alt existe pedido
+            loop por cada pedido pendiente
+            Restaurante -> Cliente:  buscarEnPedidosPendientes(idPedido: String): Pedido
+            activate Cliente
+            Cliente --> Restaurante : Pedido
+            deactivate Cliente
+            end
+    Restaurante -> Producto: mostrarPrecio(cantidad double): double
+    activate Producto
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+    deactivate Producto
+    else clienteNoExiste
+        Restaurante --> Main: trowExeption
+    end
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
-}
-
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
-}
-
+deactivate Restaurante
 @enduml
